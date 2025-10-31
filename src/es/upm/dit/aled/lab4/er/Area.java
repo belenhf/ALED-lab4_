@@ -21,6 +21,13 @@ public class Area {
 	private int time;
 	private Position2D position;
 	private Color color;
+	
+	
+	
+	
+	
+	
+	
 
 	/**
 	 * Builds a new Area.

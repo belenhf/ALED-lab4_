@@ -32,6 +32,10 @@ public class FASTASearchCallable implements Callable<List<Integer>> {
 	 */
 	public FASTASearchCallable(FASTAReaderThreads reader, int lo, int hi, byte[] pattern) {
 		// TODO
+		this.reader = reader;
+		this.lo = lo;
+		this.hi = hi;
+		this.pattern = pattern;
 	}
 
 	/**
