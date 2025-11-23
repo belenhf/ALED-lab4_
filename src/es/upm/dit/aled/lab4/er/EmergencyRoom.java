@@ -86,14 +86,14 @@ public class EmergencyRoom {
 	public void readFile(Scanner in) {
 		Random rand = new Random(13); // For assigning random colors
 
-		while (in.hasNext()) {
-			String tipo = in.next();
-			if (tipo.equals("AREA")) {
-				int x = in.nextInt();
+		while (in.hasNext()) { 
+			String tipo = in.next(); //va pidiendo lineas del fichero
+			if (tipo.equals("AREA")) { // si la palabra que encuentras es area
+				int x = in.nextInt(); //el siguiente in sera la coor x, el sig la y ...
 				int y = in.nextInt();
 				int time = in.nextInt();
 				String name = in.next().trim();
-				Area area = new Area(name, time, new Position2D(x, y));
+				Area area = new Area(name, time, new Position2D(x, y));// te creas objeto con estos param
 				// Assign a random-ish color for visualization
 				area.setColor(Color.getHSBColor(rand.nextFloat(), 0.3f, 0.9f));
 				areas.put(name, area);

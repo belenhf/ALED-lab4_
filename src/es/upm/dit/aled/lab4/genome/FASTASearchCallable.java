@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+
 /**
  * Callable task that performs a linear search over a specific section of a
  * byte[] array containing a genome. It looks for a specific pattern and returns
@@ -31,7 +32,7 @@ public class FASTASearchCallable implements Callable<List<Integer>> {
 	 * @param pattern The pattern to be found.
 	 */
 	public FASTASearchCallable(FASTAReaderThreads reader, int lo, int hi, byte[] pattern) {
-		// TODO
+		// Constructor
 		this.reader = reader;
 		this.lo = lo;
 		this.hi = hi;
@@ -48,8 +49,20 @@ public class FASTASearchCallable implements Callable<List<Integer>> {
 	 */
 	@Override
 	public List<Integer> call() throws Exception {
-		// TODO
-		return null;
+		// Donde estará el código que quiero que se ejecute paralelamente en varias hebras
+		// Creo una lista integer con las primeras posiciones de patrón encontrado en los datos
+				List<Integer> posPatronEncontrado =new ArrayList<>();
+				//Recorro el array content y uso el método compare
+				for(int i=lo; i<hi; i++) { //el bucle for ya no compara todo el array
+					try {
+						if(compare(pattern,i))//== true)
+							posPatronEncontrado.add(i);
+					} catch (FASTAException e) {
+						break;// Si llegamos al final de mi trozo, bucle debe terminar (uso break);
+					}
+				}
+					
+				return posPatronEncontrado;
 	}
 
 	/*
@@ -63,7 +76,7 @@ public class FASTASearchCallable implements Callable<List<Integer>> {
 	 * otherwise.
 	 */
 	private boolean compare(byte[] pattern, int position) throws FASTAException {
-		if (position + pattern.length > reader.getValidBytes()) {
+		if (position + pattern.length > reader.getValidBytes()) { //por eso necesitas reader en el constructor
 			throw new FASTAException("Pattern goes beyond the end of the FASTA file.");
 		}
 		for (int i = 0; i < pattern.length; i++) {

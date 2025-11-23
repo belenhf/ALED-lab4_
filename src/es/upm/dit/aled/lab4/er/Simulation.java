@@ -31,12 +31,12 @@ public class Simulation {
 	/**
 	 * Simulates an emergency room from a provided file
 	 */
-	public Simulation(String file) throws FileNotFoundException {
+	public Simulation(String file) throws FileNotFoundException { // se le pasa el fichero con el que va a trabajar
 		// Initializes EmergencyRoom
 		this.er = new EmergencyRoom();
 		// Loads data from file
 		File inputFile = new File(file);
-		er.readFile(new Scanner(inputFile));
+		er.readFile(new Scanner(inputFile)); // se lea fichero y se creen todas las areas y pacientes
 		// Initializes the GUI
 		EmergencyRoomGUI.initialize(er);
 	}

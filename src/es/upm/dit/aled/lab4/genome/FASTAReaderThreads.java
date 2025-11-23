@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -115,9 +116,56 @@ public class FASTAReaderThreads {
 	 *         pattern in the data.
 	 */
 	public List<Integer> search(byte[] pattern) {
-		// TODO
-		return null;
+		//Me creo lista vacía que devolveré
+		List<Integer> resultados = new ArrayList<Integer>();
+		//Cuantos cores tengo?
+		int cores = Runtime.getRuntime().availableProcessors();
+		System.out.println("Tengo " + cores + " cores");
+		//Me creo el executor
+		ExecutorService executor = Executors.newFixedThreadPool(cores);
+		
+		//Me creo array de objetos de tipo future ( que serán listas de int) que me van a devolver las hebras
+		//Tamaño de cuantas hebras tengo
+		Future<List<Integer>>[] futures = new Future[cores];
+		
+		//Inicializo variables
+		int tamano = content.length / cores;
+		int lo = 0;
+		int hi = 0 + tamano; //recuerda el límite hi no se incluya
+		
+		//bucle con tantas iteraciones como cores tengo
+		for(int i= 0; i<cores; i++) {
+			//Me creo una tarea (ojeto callable)
+			Callable<List<Integer>> task = new FASTASearchCallable(this, lo, hi, pattern);
+			//le mando la tarea a excutor y meto su resultado en mi array futures
+			futures[i]=executor.submit(task);
+			//actualizo lo y hi para próximas interaciones
+			lo += tamano;
+			hi += tamano;
+			
+		}
+		
+		//Recorro array de futures y uso get, para crear una sola lista (resultados)
+		//Get puede lanzar excepciones
+		for(int i = 0; i<futures.length; i++) {
+			try {
+				//el contenido de futures[i] que será una lista lo vuelco en una lista resultados
+				resultados.addAll(futures[i].get());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		//Apago el executor antes del return!!
+		executor.shutdown();
+		return resultados;
+		
+	
 	}
+	
 
 	public static void main(String[] args) {
 		long t1 = System.nanoTime();
